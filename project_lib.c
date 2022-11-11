@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "project_lib.h"
 
 int menu()
@@ -18,3 +19,4 @@ int menu()
 
     return choice;
 }
+
