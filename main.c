@@ -7,5 +7,7 @@ int main(int argc, char *argv[])
 {
     int choice;
     choice = menu();
+    printf("hi");
 }
+
 
