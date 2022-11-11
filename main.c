@@ -2,11 +2,40 @@
 #include <stdlib.h>
 
 int menu();
+void add_writer();
 
 int main(int argc, char *argv[])
 {
     int choice;
     choice = menu();
+    while (choice)
+    {
+     if (choice == 1)
+     {
+
+     }   
+     else if(choice == 2)
+     {
+
+     }
+     else if(choice == 3)
+     {
+
+     }
+     else if(choice == 4)
+     {
+
+     }
+     else if(choice == 5)
+     {
+
+     }
+     else if(choice == 6)
+     {
+
+     }
+     choice = menu();
+    }
 }
 
 int menu()
