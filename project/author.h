@@ -21,5 +21,6 @@ void init_author(authors_array_t *au, int cap);
 void add_author(authors_array_t *au);
 void print_authors(authors_array_t *au);
 void save_author_logs(authors_array_t *au);
+void free_authors_array(authors_array_t *au);
 
 #endif

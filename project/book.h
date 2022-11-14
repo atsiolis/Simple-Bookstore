@@ -20,4 +20,5 @@ void init_book(books_array_t *b, int cap);
 void add_book(books_array_t *b);
 void print_books(books_array_t *b);
 void save_book_logs(books_array_t *b);
+void free_books_array(books_array_t *b);
 #endif

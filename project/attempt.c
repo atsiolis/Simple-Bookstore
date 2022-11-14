@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     init_author(&au, 5);  // provlima me to init_author kai to init_book. den trexoun mazi. mono mona tous
     init_book(&b, 5);
     load_book_logs(&b);
-    // load_author_logs(&au);
+    load_author_logs(&au);
 
     choice = menu();    
     while (choice)
@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
             {
                 save_book_logs(&b);
                 save_author_logs(&au);
-                free(b.array);
-                free(au.array);
+                free_books_array(&b);
+                free_authors_array(&au);
                 return 0;
             }
         choice = menu();

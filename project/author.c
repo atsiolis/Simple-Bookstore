@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include<stdbool.h> 
+#include <time.h>
 #include "author.h"
 #define SIZE 20
-
 
 void load_author_logs(authors_array_t *au)
 {
@@ -61,6 +62,10 @@ void init_author(authors_array_t *au, int cap)
 
 void add_author(authors_array_t *au)
 {
+    int i;
+    time_t t;
+    srand((unsigned) time(&t));
+    int id = rand() %1000;
     if(au->size == au->capacity)
     {
         au->capacity *= 2;
@@ -68,8 +73,23 @@ void add_author(authors_array_t *au)
     }
     au->array[au->size].surname= malloc(SIZE * sizeof(char));
     au->array[au->size].name= malloc(SIZE * sizeof(char));
-    printf("Enter writer id: ");
-    scanf("%d", &au->array[au->size].writer_id);
+
+    bool a = true;
+    while (a == true)
+    {
+        a = false;
+        for(i = 0; i < au->size; i++)
+        {
+            if(id == au->array[i].writer_id)
+            {    
+                id = rand() %1000;
+                a = true;
+            }
+        }
+    }
+    
+    au->array[au->size].writer_id = id;
+    printf("Writer id: %d \n", id);
     printf("Enter surname: ");
     scanf("%s", au->array[au->size].surname);
     printf("Enter name: ");
@@ -105,4 +125,15 @@ void save_author_logs(authors_array_t *au)
         fprintf(fp, "%d\n", au->array[i].num_of_books);
     }
     fclose(fp);
+}
+
+void free_authors_array(authors_array_t *au)
+{
+    int i;
+    for(i = 0; i < au->size; i++)
+    {
+        free(au->array[i].name);
+        free(au->array[i].surname);
+    }
+    free(au->array);
 }

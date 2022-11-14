@@ -95,3 +95,13 @@ void save_book_logs(books_array_t *b)
     }
     fclose(fp);
 }
+
+void free_books_array(books_array_t *b)
+{
+    int i;
+    for(i = 0; i < b->size; i++)
+    {
+        free(b->array[i].title);
+    }
+    free(b->array);
+}
