@@ -15,9 +15,9 @@ typedef struct books_array
     int size;
 }books_array_t;
 
-
+void load_book_logs(books_array_t *b); //dk if placed correctly- based on students from codes_2019
 void init_book(books_array_t *b, int cap);
 void add_book(books_array_t *b);
 void print_books(books_array_t *b);
-
+void save_book_logs(books_array_t *b);
 #endif

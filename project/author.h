@@ -16,8 +16,10 @@ typedef struct authors_array
     int size;
 }authors_array_t;
 
+void load_author_logs(authors_array_t *au); //dk if placed correctly- based on students from codes_2019
 void init_author(authors_array_t *au, int cap);
 void add_author(authors_array_t *au);
 void print_authors(authors_array_t *au);
+void save_author_logs(authors_array_t *au);
 
 #endif

@@ -3,8 +3,6 @@
 #include <string.h>
 #include "project_lib.h"
 
-
-
 int menu()
 {
     int choice;
