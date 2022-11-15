@@ -6,6 +6,13 @@
 #include "author.h"
 #define SIZE 20
 
+void init_author(authors_array_t *au, int cap)
+{
+    au->array = malloc(cap * sizeof(author_t)); 
+    au->capacity = cap;
+    au->size = 0;
+}
+
 void load_author_logs(authors_array_t *au)
 {
     int i;
@@ -15,7 +22,7 @@ void load_author_logs(authors_array_t *au)
 
     if((fp = fopen("author_logs.txt", "r")) == NULL)
     {
-        fprintf(stderr, "File not found.\n");
+        printf("File not found.\n");
         fp = fopen("author_logs.txt", "w");
         fclose(fp);
         return;
@@ -53,11 +60,11 @@ void load_author_logs(authors_array_t *au)
     fclose(fp);
 }
 
-void init_author(authors_array_t *au, int cap)
+void swap_author(author_t *a, author_t *b)
 {
-    au->array = malloc(cap * sizeof(author_t)); 
-    au->capacity = cap;
-    au->size = 0;
+    author_t temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 void add_author(authors_array_t *au)
@@ -96,6 +103,49 @@ void add_author(authors_array_t *au)
     scanf("%s", au->array[au->size].name);
     au->array[au->size].num_of_books = 0;
     au->size++;
+    
+    for(i = au->size - 1; i > 0 && au->array[i].writer_id < au->array[i - 1].writer_id; i--)
+        swap_author(&au->array[i], &au->array[i - 1]);
+}
+
+void auto_add_author(authors_array_t *au,char *surname, char *name)
+{
+    int i;
+    time_t t;
+    srand((unsigned) time(&t));
+    int id = rand() %1000;
+    if(au->size == au->capacity)
+    {
+        au->capacity *= 2;
+        au->array = realloc(au->array, au->capacity * sizeof(author_t));
+    }
+    au->array[au->size].surname= malloc(SIZE * sizeof(char));
+    au->array[au->size].name= malloc(SIZE * sizeof(char));
+
+    bool a = true;
+    while (a == true)
+    {
+        a = false;
+        for(i = 0; i < au->size; i++)
+        {
+            if(id == au->array[i].writer_id)
+            {    
+                id = rand() %1000;
+                a = true;
+            }
+        }
+    }
+
+    printf("Writer id: %d \n", id);
+    au->array[au->size].writer_id = id;
+    strcpy(au->array[au->size].surname, surname);
+    strcpy(au->array[au->size].name, name);
+    au->array[au->size].num_of_books = 1;
+
+    au->size++;
+    
+    for(i = au->size - 1; i > 0 && au->array[i].writer_id < au->array[i - 1].writer_id; i--)
+        swap_author(&au->array[i], &au->array[i - 1]);
 }
 
 void print_authors(authors_array_t *au)
@@ -113,7 +163,7 @@ void save_author_logs(authors_array_t *au)
     
     if((fp = fopen("author_logs.txt", "w")) == NULL)
     {
-        fprintf(stderr, "Error logging authors.\n");
+        printf("Error logging authors.\n");
         return;
     }
     fprintf(fp, "%d\n",au->size);
@@ -136,4 +186,41 @@ void free_authors_array(authors_array_t *au)
         free(au->array[i].surname);
     }
     free(au->array);
+}
+
+
+int compare_author(const void *a, const void *b)
+{
+    author_t *x = (author_t *)a;
+    author_t *y = (author_t *)b;
+    return x->writer_id - y->writer_id;
+}
+
+int author_exists(authors_array_t *au, char *surname)
+{
+    int i;
+    for(i = 0; i < au->size; i++)
+    {
+        if(strcmp(au->array[i].surname, surname) == 0)
+            return au->array[i].writer_id;
+    }
+    return 0;
+}
+
+int bin_search_author(authors_array_t *au, int id)
+{
+    int left = 0;
+    int right = au->size - 1;
+    int mid;
+    while(left <= right)
+    {
+        mid = (left + right) / 2;
+        if(au->array[mid].writer_id == id)
+            return mid;
+        else if(au->array[mid].writer_id < id)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+    return -1;
 }
