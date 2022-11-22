@@ -34,10 +34,15 @@ int main(int argc, char *argv[])
         {
             add_book(&b, &au, &wr);
             print_books(&b);
-            //sort_by_id_then_title(&wr);
         }
-        else if(choice == 3){}
-        else if(choice == 4){}
+        else if(choice == 3)
+        {
+            search_surname_and_print_author(&au, &b, &wr);
+        }
+        else if(choice == 4)
+        {
+            seach_title_and_print_book(&b, &au, &wr);
+        }
         else if(choice == 5){}
         else if(choice == 6){}
         else if(choice == 7) 
@@ -57,6 +62,4 @@ int main(int argc, char *argv[])
         }
         choice = menu();
     }
-    
-    
 }

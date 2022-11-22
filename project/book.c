@@ -20,11 +20,12 @@ void load_book_logs(books_array_t *b)
 
     if((fp = fopen("book_logs.txt", "r")) == NULL)
     {
-        printf("File not found.\n");
+        printf("Book logs not found. Created file.\n");
         fp = fopen("book_logs.txt", "w");
         fclose(fp);
         return;
     }
+
     fgets(line, 100, fp);
     token = strtok(line, "\n\0");
     b->size = atoi(token);
@@ -64,11 +65,10 @@ void swap_books(book_t *a, book_t *b)
     *b = temp;
 }
 
-
-
 void print_books(books_array_t *b)
 {
     int i;
+
     for(i = 0; i < b->size; i++)
         printf("Release year: %d, Title: %s, Price: %f\n", b->array[i].release_date, b->array[i].title, b->array[i].price);
 }
@@ -84,6 +84,7 @@ void save_book_logs(books_array_t *b)
         return;
     }
     fprintf(fp, "%d\n",b->size);
+
     for( i = 0; i < b->size; i++)
     {
         fprintf(fp, "%s\n", b->array[i].title);
@@ -101,5 +102,17 @@ void free_books_array(books_array_t *b)
         free(b->array[i].title);
     }
     free(b->array);
+    
 }
 
+int search_book(books_array_t *b, char *title)
+{
+    int i;
+    
+    for(i = 0; i < b->size; i++)
+    {
+        if(strcmp(b->array[i].title, title) == 0)
+            return i;
+    }
+    return -1;
+}

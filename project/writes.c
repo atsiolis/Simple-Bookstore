@@ -19,11 +19,12 @@ void load_writes_logs(writes_array_t *wr)
 
     if((fp = fopen("writes_logs.txt", "r")) == NULL)
     {
-        printf("File not found.\n");
+        printf("Author-book info (writes) not found. Created file.\n");
         fp = fopen("writes_logs.txt", "w");
         fclose(fp);
         return;
     }
+
     fgets(line, 100, fp);
     token = strtok(line, "\n\0");
     wr->size = atoi(token);
@@ -37,7 +38,6 @@ void load_writes_logs(writes_array_t *wr)
             wr->array = realloc(wr->array, wr->capacity * sizeof(writes_t));
         }
         
-
         fgets(line, 100, fp);
         token = strtok(line, "\n\0");
         wr->array[i].title = malloc(strlen(token) + 1);
@@ -62,24 +62,25 @@ void swap_writes(writes_t *a, writes_t *b)
 void add_writes(writes_array_t *wr, char *title, int writer_id)
 {
     int i;
+
     if(wr->size == wr->capacity)
     {
         wr->capacity *= 2;
         wr->array = realloc(wr->array, wr->capacity * sizeof(writes_t));
     }
+
     wr->array[wr->size].title = malloc(strlen(title) + 1);
     strcpy(wr->array[wr->size].title, title);
     wr->array[wr->size].writer_id = writer_id;
     wr->size++;
     
-    
     int temp=wr->size;
+
     for(i=wr->size-1; i>0 && wr->array[i].writer_id < wr->array[i-1].writer_id; i--)
     {
         swap_writes(&wr->array[i], &wr->array[i-1]);
         temp=i-1;
     }
-
 
     for(i=temp; i>0; i--)
     {   
@@ -91,13 +92,12 @@ void add_writes(writes_array_t *wr, char *title, int writer_id)
             }
         }
     }
-    
-
 }
 
 void print_writes(writes_array_t *wr)
 {
     int i;
+
     for(i = 0; i< wr->size; i++)
         printf("Writer id: %d, Book title: %s", wr->array[i].writer_id, wr->array[i].title);
 }
@@ -113,6 +113,7 @@ void save_writes_logs(writes_array_t *wr)
         return;
     }
     fprintf(fp, "%d\n", wr->size);
+
     for(i = 0; i < wr->size; i++)
     {
         fprintf(fp, "%s\n", wr->array[i].title);
@@ -129,3 +130,21 @@ void free_writes_array(writes_array_t *wr)
     free(wr->array);
 }
 
+int binary_search_writes(writes_array_t *wr, int writer_id)
+{
+    int low = 0;
+    int high = wr->size - 1;
+    int mid;
+    
+    while(low <= high)
+    {
+        mid = (low + high) / 2;
+        if(wr->array[mid].writer_id == writer_id)
+            return mid;
+        else if(wr->array[mid].writer_id < writer_id)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}

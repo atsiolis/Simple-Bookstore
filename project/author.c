@@ -22,7 +22,7 @@ void load_author_logs(authors_array_t *au)
 
     if((fp = fopen("author_logs.txt", "r")) == NULL)
     {
-        printf("File not found.\n");
+        printf("Author logs not found. Created file.\n");
         fp = fopen("author_logs.txt", "w");
         fclose(fp);
         return;
@@ -39,7 +39,6 @@ void load_author_logs(authors_array_t *au)
             au->capacity *= 2;
             au->array = realloc(au->array, au->capacity * sizeof(author_t));
         }
-        
 
         fgets(line, 100, fp);
         token = strtok(line, "\n\0");
@@ -52,7 +51,6 @@ void load_author_logs(authors_array_t *au)
         strcpy(au->array[i].surname, token);
         token = NULL;
 
-        
         fgets(line, 100, fp);
         token = strtok(line, "\n\0");
         au->array[i].name = malloc(strlen(token) + 1);
@@ -80,11 +78,13 @@ void add_author(authors_array_t *au)
     time_t t;
     srand((unsigned) time(&t));
     int id = rand() %1000+1;
+
     if(au->size == au->capacity)
     {
         au->capacity *= 2;
         au->array = realloc(au->array, au->capacity * sizeof(author_t));
     }
+
     au->array[au->size].surname= malloc(SIZE * sizeof(char));
     au->array[au->size].name= malloc(SIZE * sizeof(char));
 
@@ -121,6 +121,7 @@ void auto_add_author(authors_array_t *au,char *surname, char *name)
     time_t t;
     srand((unsigned) time(&t));
     int id = rand() %1000+1;
+
     if(au->size == au->capacity)
     {
         au->capacity *= 2;
@@ -173,6 +174,7 @@ void save_author_logs(authors_array_t *au)
         printf("Error logging authors.\n");
         return;
     }
+
     fprintf(fp, "%d\n",au->size);
     for(i = 0; i < au->size; i++)
     {
@@ -187,6 +189,7 @@ void save_author_logs(authors_array_t *au)
 void free_authors_array(authors_array_t *au)
 {
     int i;
+
     for(i = 0; i < au->size; i++)
     {
         free(au->array[i].name);
@@ -219,6 +222,7 @@ int bin_search_author(authors_array_t *au, int id)
     int left = 0;
     int right = au->size - 1;
     int mid;
+    
     while(left <= right)
     {
         mid = (left + right) / 2;

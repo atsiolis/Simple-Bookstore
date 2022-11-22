@@ -21,4 +21,5 @@ void swap_books(book_t *a, book_t *b);
 void print_books(books_array_t *b);
 void save_book_logs(books_array_t *b);
 void free_books_array(books_array_t *b);
+int search_book(books_array_t *b, char *title);
 #endif

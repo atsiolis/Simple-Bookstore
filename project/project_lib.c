@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h> 
 #include "writes.h"
 #include "author.h"
 #include "book.h"
 #include "project_lib.h"
-
+#define SIZE 50
 
 int menu()
 {
@@ -76,27 +77,83 @@ void add_book(books_array_t *b, authors_array_t *au, writes_array_t *wr)
     }
 }
 
-void sort_by_id_then_title(writes_array_t *wr)
+void search_surname_and_print_author(authors_array_t *au, books_array_t *b, writes_array_t *wr)
 {
-    int i, j;
-    for(i = 0; i < wr->size - 1; i++)
+    int i, id, au_pos, wr_pos;
+    char surname[20];
+    printf("Enter author's surname: ");
+    scanf("%s", surname);
+
+    id = author_exists(au, surname);
+    if(id == 0)
     {
-        for(j = 0; j < wr->size - i - 1; j++)
-        {
-            if(wr->array[j].writer_id > wr->array[j+1].writer_id)
-            {
-                swap_writes(&wr->array[j], &wr->array[j+1]);
-            }
-            else if(wr->array[j].writer_id == wr->array[j+1].writer_id)
-            {
-                if(strcmp(wr->array[j].title, wr->array[j+1].title) > 0)
-                {
-                    swap_writes(&wr->array[j], &wr->array[j+1]);
-                }
-            }
-        }
+        printf("Author does not exist.\n");
+        return;
     }
+    
+    au_pos = bin_search_author(au, id);
+    wr_pos = binary_search_writes(wr, id);
+    
+    int temp = wr_pos;
+
+    for(i=wr_pos; i>=0 && wr->array[i].writer_id == id; i--)
+        temp=i;
+    
+    
+    
+    printf("Author's id: %d\n", au->array[au_pos].writer_id);
+    printf("Author's surname: %s\n", au->array[au_pos].surname);
+    printf("Author's name: %s\n", au->array[au_pos].name);
+    printf("Number of books: %d\n", au->array[au_pos].num_of_books);
+    
+    
+    for(i=temp; i<wr->size && wr->array[i].writer_id == id; i++)
+    {
+        printf("\n");
+        printf("Title: %s\n", wr->array[i].title);
+        printf("Release date: %d\n", b->array[search_book(b, wr->array[i].title)].release_date);
+        printf("Price: %.2f\n", b->array[search_book(b, wr->array[i].title)].price);
+    }
+
+    return;   
 }
 
+void seach_title_and_print_book(books_array_t *b, authors_array_t *au, writes_array_t *wr)
+{
+    int i, j;
+    int book_au_id, au_pos;
+    char title[SIZE];
+    bool flag = false;
 
+    printf("\n Book title: ");
+    scanf("%s", title);
 
+    for (i = 0; i < b->size; i++)
+    {
+        if (!strcmp(title, b->array[i].title))
+        {
+            printf("Book info:\n");
+            printf("Book's title: %s\n", b->array[i].title);
+            printf("Book's release date: %d\n", b->array[i].release_date);
+            printf("Book's price: %.2f\n", b->array[i].price);
+
+            for (j = 0; j < wr->size; j++)
+            {
+                if (strcmp(wr->array[j].title, title) == 0)
+                {
+                    book_au_id = wr->array[j].writer_id;
+                    au_pos = bin_search_author(au, book_au_id);
+
+                    printf("Author's id: %d\n", au->array[au_pos].writer_id);
+                    printf("Author's surname: %s\n", au->array[au_pos].surname);
+                    printf("Author's name: %s\n", au->array[au_pos].name);
+                    printf("Author's number of books: %d\n", au->array[au_pos].num_of_books);
+                    printf("\n");
+                }
+            }
+            flag = true;
+        }
+    }
+    if (flag == false)
+        printf("No books with this title were found.\n");
+}
