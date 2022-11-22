@@ -16,6 +16,7 @@ typedef struct writes_array
 
 void init_writes(writes_array_t *wr, int cap);
 void load_writes_logs(writes_array_t *wr);
+void swap_writes(writes_t *a, writes_t *b);
 void add_writes(writes_array_t *wr, char *title, int writer_id);
 void print_writes(writes_array_t *wr);
 void save_writes_logs(writes_array_t *wr);

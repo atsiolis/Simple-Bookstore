@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "project_lib.h"
 #include "writes.h"
 #include "author.h"
 #include "book.h"
+#include "project_lib.h"
 
 int main(int argc, char *argv[])
 {   
@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
         {
             add_book(&b, &au, &wr);
             print_books(&b);
+            //sort_by_id_then_title(&wr);
         }
         else if(choice == 3){}
         else if(choice == 4){}
@@ -50,8 +51,12 @@ int main(int argc, char *argv[])
                 free_writes_array(&wr);
                 return 0;
             }
+        else
+        {
+            printf("Invalid input. Please choose an operation from [1,7].\n");
+        }
         choice = menu();
     }
     
-    return 0;
+    
 }

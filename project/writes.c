@@ -31,6 +31,13 @@ void load_writes_logs(writes_array_t *wr)
 
     for(i = 0; i < wr->size; i++)
     {
+        if (i == wr->capacity)
+        {
+            wr->capacity *= 2;
+            wr->array = realloc(wr->array, wr->capacity * sizeof(writes_t));
+        }
+        
+
         fgets(line, 100, fp);
         token = strtok(line, "\n\0");
         wr->array[i].title = malloc(strlen(token) + 1);
@@ -45,8 +52,16 @@ void load_writes_logs(writes_array_t *wr)
     fclose(fp);
 }
 
+void swap_writes(writes_t *a, writes_t *b)
+{
+    writes_t temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
 void add_writes(writes_array_t *wr, char *title, int writer_id)
 {
+    int i;
     if(wr->size == wr->capacity)
     {
         wr->capacity *= 2;
@@ -56,6 +71,28 @@ void add_writes(writes_array_t *wr, char *title, int writer_id)
     strcpy(wr->array[wr->size].title, title);
     wr->array[wr->size].writer_id = writer_id;
     wr->size++;
+    
+    
+    int temp=wr->size;
+    for(i=wr->size-1; i>0 && wr->array[i].writer_id < wr->array[i-1].writer_id; i--)
+    {
+        swap_writes(&wr->array[i], &wr->array[i-1]);
+        temp=i-1;
+    }
+
+
+    for(i=temp; i>0; i--)
+    {   
+        if(wr->array[i].writer_id == wr->array[i-1].writer_id)
+        {
+            if(strcmp(wr->array[i].title, wr->array[i-1].title) < 0)
+            {
+                swap_writes(&wr->array[i], &wr->array[i-1]);
+            }
+        }
+    }
+    
+
 }
 
 void print_writes(writes_array_t *wr)

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include<stdbool.h> 
+#include <stdbool.h> 
 #include <time.h>
 #include "author.h"
 #define SIZE 20
@@ -33,7 +33,14 @@ void load_author_logs(authors_array_t *au)
     token = NULL;
 
     for( i = 0; i < au->size; i++)
-    {
+    {   
+        if (i == au->capacity)
+        {
+            au->capacity *= 2;
+            au->array = realloc(au->array, au->capacity * sizeof(author_t));
+        }
+        
+
         fgets(line, 100, fp);
         token = strtok(line, "\n\0");
         au->array[i].writer_id = atoi(token);
@@ -72,7 +79,7 @@ void add_author(authors_array_t *au)
     int i;
     time_t t;
     srand((unsigned) time(&t));
-    int id = rand() %1000;
+    int id = rand() %1000+1;
     if(au->size == au->capacity)
     {
         au->capacity *= 2;
@@ -89,7 +96,7 @@ void add_author(authors_array_t *au)
         {
             if(id == au->array[i].writer_id)
             {    
-                id = rand() %1000;
+                id = rand() %1000 +1;
                 a = true;
             }
         }
@@ -113,7 +120,7 @@ void auto_add_author(authors_array_t *au,char *surname, char *name)
     int i;
     time_t t;
     srand((unsigned) time(&t));
-    int id = rand() %1000;
+    int id = rand() %1000+1;
     if(au->size == au->capacity)
     {
         au->capacity *= 2;
@@ -130,7 +137,7 @@ void auto_add_author(authors_array_t *au,char *surname, char *name)
         {
             if(id == au->array[i].writer_id)
             {    
-                id = rand() %1000;
+                id = rand() %1000 +1;
                 a = true;
             }
         }
