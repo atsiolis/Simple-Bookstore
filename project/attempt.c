@@ -43,8 +43,15 @@ int main(int argc, char *argv[])
         {
             seach_title_and_print_book(&b, &au, &wr);
         }
-        else if(choice == 5){}
-        else if(choice == 6){}
+        else if(choice == 5)
+        {
+            search_id_and_delete_author(&au, &b, &wr);
+
+        }
+        else if(choice == 6)
+        {
+            search_and_delete_book(&b, &au, &wr);
+        }
         else if(choice == 7) 
             {
                 qsort(au.array, au.size, sizeof(author_t), compare_author);

@@ -58,7 +58,7 @@ void load_book_logs(books_array_t *b)
     fclose(fp);
 }
 
-void swap_books(book_t *a, book_t *b)
+void swap_book(book_t *a, book_t *b)
 {
     book_t temp = *a;
     *a = *b;

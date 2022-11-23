@@ -73,11 +73,11 @@ void add_book(books_array_t *b, authors_array_t *au, writes_array_t *wr)
 
     for(i = b->size-1; i > 0 && strcmp(b->array[i].title, b->array[i-1].title) < 0; i--)
     {
-        swap_books(&b->array[i], &b->array[i-1]);
+        swap_book(&b->array[i], &b->array[i-1]);
     }
 }
 
-void search_surname_and_print_author(authors_array_t *au, books_array_t *b, writes_array_t *wr)
+void search_surname_and_print_author(authors_array_t *au, books_array_t *b,  writes_array_t *wr)
 {
     int i, id, au_pos, wr_pos;
     char surname[20];
@@ -156,4 +156,126 @@ void seach_title_and_print_book(books_array_t *b, authors_array_t *au, writes_ar
     }
     if (flag == false)
         printf("No books with this title were found.\n");
+}
+
+void search_id_and_delete_author(authors_array_t *au, books_array_t *b, writes_array_t *wr)
+{
+    int i, j, k, id, au_pos, wr_pos, wr_counter = 0;
+    printf("Enter author's id: ");
+    scanf("%d", &id);
+
+    au_pos = bin_search_author(au, id);
+    wr_pos = binary_search_writes(wr, id);
+
+    if (au_pos == -1)
+    {
+        printf("Author does not exist.\n");
+        return;
+    }
+
+    for (i = au_pos; i < au->size - 1; i++)
+    {
+        swap_author(&au->array[i], &au->array[i + 1]);
+    }
+    au->size--;
+
+    int temp = wr_pos;
+    for (i = wr_pos; i >= 0 && wr->array[i].writer_id == id; i--)
+        temp = i;
+
+    for (i = 0; i < wr->size; i++)
+    {
+        if (strcmp(wr->array[i].title, wr->array[temp].title) == 0)
+            wr_counter++;
+    }
+
+    if (wr_counter == 1)
+    {
+        for (i = temp; i < wr->size && wr->array[i].writer_id == id; i++)
+        {
+            for (j = i; j < wr->size - 1; j++)
+            {
+                swap_writes(&wr->array[j], &wr->array[j + 1]);
+            }
+            wr->size--;
+            for (k = 0; k < b->size; k++)
+            {
+                if (strcmp(wr->array[i].title, b->array[k].title) == 0)
+                {
+                    for (j = k; j < b->size - 1; j++)
+                    {
+                        swap_books(&b->array[j], &b->array[j + 1]);
+                    }
+                }
+            }
+            b->size--;
+        }
+    }
+    else
+    {
+        for (i = temp; i < wr->size && wr->array[i].writer_id == id; i++)
+        {
+            for (j = i; j < wr->size - 1; j++)
+            {
+                swap_writes(&wr->array[j], &wr->array[j + 1]);
+            }
+        }
+        wr->size--;
+    }
+
+    // for(i = temp; i < wr->size; i++)
+    // {
+    //     if(wr->array[i].writer_id == id)
+    //     {
+    //         for(k=0; k<b->size; k++)
+    //         {
+    //             if(strcmp(wr->array[i].title, b->array[k].title) == 0)
+    //             {
+    //                 for(j = k; j < b->size-1; j++)
+    //                 {
+    //                     swap_books(&b->array[j], &b->array[j+1]);
+    //                 }
+    //             }
+    //         }
+
+    //         for(j = i; j < wr->size-1; j++)
+    //         {
+    //             swap_writes(&wr->array[j], &wr->array[j+1]);
+    //         }
+    //         counter++;
+    //     }
+    // }
+    // wr->size -= counter;
+    // b->size -= counter;
+}
+
+void search_and_delete_book(books_array_t *b, authors_array_t *au,  writes_array_t *wr)
+{
+    int i, j;
+    int b_pos, wr_pos, b_reg = 0;
+    char title[SIZE];
+
+    printf("\n Book title: ");
+    scanf("%s", title);
+
+    b_pos = search_book(b, title);
+    if(b_pos >= 0)
+    {
+        for( i = b_pos; i < b->size - 1; i++)
+            swap_book(&b->array[i], &b->array[i+1]);
+        b->size--;
+
+        while(search_writes(wr, title) >= 0)
+        {
+            wr_pos = search_writes(wr, title);
+            au->array[bin_search_author(au, wr->array[wr_pos].writer_id)].num_of_books--;
+            for( i = wr_pos; i < wr->size - 1 ; i++)
+                swap_writes(&wr->array[i], &wr->array[i+1]);
+            wr->size--;
+        }
+        printf("\nBook logs with title %s deleted successfully. \n", &title);
+    }
+    else
+        printf("\nNo books with that title were found.\n");
+
 }

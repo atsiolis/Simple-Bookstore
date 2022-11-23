@@ -18,7 +18,7 @@ typedef struct authors_array
 
 void init_author(authors_array_t *au, int cap);
 void load_author_logs(authors_array_t *au);
-void swap(author_t *a, author_t *b);
+void swap_author(author_t *a, author_t *b);
 void add_author(authors_array_t *au);
 void auto_add_author(authors_array_t *au,char *surname, char *name);
 void print_authors(authors_array_t *au);

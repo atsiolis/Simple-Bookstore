@@ -148,3 +148,15 @@ int binary_search_writes(writes_array_t *wr, int writer_id)
     }
     return -1;
 }
+
+int search_writes(writes_array_t *wr, char *title)
+{
+    int i;
+
+    for(i = 0; i < wr->size; i++)
+    {
+        if(strcmp(wr->array[i].title, title) == 0)
+            return i;
+    }
+    return -1;
+}

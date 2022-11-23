@@ -17,7 +17,7 @@ typedef struct books_array
 
 void init_book(books_array_t *b, int cap);
 void load_book_logs(books_array_t *b);
-void swap_books(book_t *a, book_t *b);
+void swap_book(book_t *a, book_t *b);
 void print_books(books_array_t *b);
 void save_book_logs(books_array_t *b);
 void free_books_array(books_array_t *b);
