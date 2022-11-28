@@ -28,21 +28,28 @@ int menu()
 void add_book(books_array_t *b, authors_array_t *au, writes_array_t *wr)
 {
     int i,num_of_authors;
-    char surname[20], name[20],temp;
+    char surname[20], name[20],temp,title[50];
     int au_ex_id;
     
     if(b->size == b->capacity)
+
     {
         b->capacity *= 2;
         b->array = realloc(b->array, b->capacity * sizeof(book_t));
     }
     b->array[b->size].title = malloc(50 * sizeof(char));
-    printf("Enter release year: ");
-    scanf("%d", &b->array[b->size].release_date);
     printf("Enter title: ");
     scanf("%c", &temp);
-    scanf("%[^\n]", b->array[b->size].title);
+    scanf("%[^\n]", title);
     scanf("%c", &temp);
+    if(book_exists(b, title) == 1)
+    {
+        printf("Book already exists.\n");
+        return;
+    }
+    strcpy(b->array[b->size].title, title);
+    printf("Enter release year: ");
+    scanf("%d", &b->array[b->size].release_date);
     printf("Enter price: ");
     scanf("%f", &b->array[b->size].price);
     printf("Number of authors: ");
@@ -204,7 +211,7 @@ void search_id_and_delete_author(authors_array_t *au, books_array_t *b, writes_a
                 {
                     for (j = k; j < b->size - 1; j++)
                     {
-                        swap_books(&b->array[j], &b->array[j + 1]);
+                        swap_book(&b->array[j], &b->array[j + 1]);
                     }
                 }
             }

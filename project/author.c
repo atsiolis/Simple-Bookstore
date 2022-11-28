@@ -75,6 +75,7 @@ void swap_author(author_t *a, author_t *b)
 void add_author(authors_array_t *au)
 {
     int i;
+    char surname[SIZE];
     time_t t;
     srand((unsigned) time(&t));
     int id = rand() %1000+1;
@@ -102,10 +103,16 @@ void add_author(authors_array_t *au)
         }
     }
     
+    printf("Enter surname: ");
+    scanf("%s", surname);
+    if(author_exists(au, surname) != 0)
+    {
+        printf("Author already exists.\n");
+        return;
+    }
+    strcpy(au->array[au->size].surname, surname);
     au->array[au->size].writer_id = id;
     printf("Writer id: %d \n", id);
-    printf("Enter surname: ");
-    scanf("%s", au->array[au->size].surname);
     printf("Enter name: ");
     scanf("%s", au->array[au->size].name);
     au->array[au->size].num_of_books = 0;

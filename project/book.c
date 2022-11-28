@@ -105,6 +105,17 @@ void free_books_array(books_array_t *b)
     
 }
 
+int book_exists(books_array_t *b, char *title)
+{
+    int i;
+    for(i = 0; i < b->size; i++)
+    {
+        if(strcmp(b->array[i].title, title) == 0)
+            return 1;
+    }
+    return 0;
+}
+
 int search_book(books_array_t *b, char *title)
 {
     int i;
