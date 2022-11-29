@@ -167,13 +167,13 @@ void seach_title_and_print_book(books_array_t *b, authors_array_t *au, writes_ar
 
 void search_id_and_delete_author(authors_array_t *au, books_array_t *b, writes_array_t *wr)
 {
-    int i, j, k, id, au_pos, wr_pos, wr_counter = 0;
+    int i, j, k, l, id, num_of_books, au_pos, wr_pos, wr_counter = 0;
     printf("Enter author's id: ");
     scanf("%d", &id);
 
     au_pos = bin_search_author(au, id);
-    wr_pos = binary_search_writes(wr, id);
 
+    num_of_books=au->array[au_pos].num_of_books;
     if (au_pos == -1)
     {
         printf("Author does not exist.\n");
@@ -186,74 +186,53 @@ void search_id_and_delete_author(authors_array_t *au, books_array_t *b, writes_a
     }
     au->size--;
 
-    int temp = wr_pos;
-    for (i = wr_pos; i >= 0 && wr->array[i].writer_id == id; i--)
-        temp = i;
-
-    for (i = 0; i < wr->size; i++)
+    for(l=0; l<num_of_books; l++)
     {
-        if (strcmp(wr->array[i].title, wr->array[temp].title) == 0)
-            wr_counter++;
-    }
+        int temp = binary_search_writes(wr, id);
+        for (i = wr_pos; i >= 0 && wr->array[i].writer_id == id; i--)
+            temp = i;
 
-    if (wr_counter == 1)
-    {
-        for (i = temp; i < wr->size && wr->array[i].writer_id == id; i++)
+        wr_counter=0;
+        for (i = 0; i < wr->size; i++)
         {
-            for (j = i; j < wr->size - 1; j++)
+            if (strcmp(wr->array[i].title, wr->array[temp].title) == 0)
+                wr_counter++;
+        }
+
+        if (wr_counter == 1)
+        {
+            for (i = temp; i < wr->size && wr->array[i].writer_id == id; i++)
             {
-                swap_writes(&wr->array[j], &wr->array[j + 1]);
-            }
-            wr->size--;
-            for (k = 0; k < b->size; k++)
-            {
-                if (strcmp(wr->array[i].title, b->array[k].title) == 0)
+                for (j = i; j < wr->size - 1; j++)
                 {
-                    for (j = k; j < b->size - 1; j++)
+                    swap_writes(&wr->array[j], &wr->array[j + 1]);
+                }
+                wr->size--;
+                for (k = 0; k < b->size; k++)
+                {
+                    if (strcmp(wr->array[i].title, b->array[k].title) == 0)
                     {
-                        swap_book(&b->array[j], &b->array[j + 1]);
+                        for (j = k; j < b->size - 1; j++)
+                        {
+                            swap_book(&b->array[j], &b->array[j + 1]);
+                        }
                     }
                 }
+                b->size--;
             }
-            b->size--;
         }
-    }
-    else
-    {
-        for (i = temp; i < wr->size && wr->array[i].writer_id == id; i++)
+        else if(wr_counter>1)
         {
-            for (j = i; j < wr->size - 1; j++)
+            for (i = temp; i < wr->size && wr->array[i].writer_id == id; i++)
             {
-                swap_writes(&wr->array[j], &wr->array[j + 1]);
+                for (j = i; j < wr->size - 1; j++)
+                {
+                    swap_writes(&wr->array[j], &wr->array[j + 1]);
+                }
             }
+            wr->size--;
         }
-        wr->size--;
     }
-
-    // for(i = temp; i < wr->size; i++)
-    // {
-    //     if(wr->array[i].writer_id == id)
-    //     {
-    //         for(k=0; k<b->size; k++)
-    //         {
-    //             if(strcmp(wr->array[i].title, b->array[k].title) == 0)
-    //             {
-    //                 for(j = k; j < b->size-1; j++)
-    //                 {
-    //                     swap_books(&b->array[j], &b->array[j+1]);
-    //                 }
-    //             }
-    //         }
-
-    //         for(j = i; j < wr->size-1; j++)
-    //         {
-    //             swap_writes(&wr->array[j], &wr->array[j+1]);
-    //         }
-    //         counter++;
-    //     }
-    // }
-    // wr->size -= counter;
-    // b->size -= counter;
 }
 
 void search_and_delete_book(books_array_t *b, authors_array_t *au,  writes_array_t *wr)

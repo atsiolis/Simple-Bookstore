@@ -23,10 +23,12 @@ typedef struct au_list
 
 void init_author_list(authors_list_t *au);
 void load_author_list(authors_list_t *au);
-void add_author(authors_list_t *au);
-void print_author_list(authors_list_t *au);
-int author_exists(authors_list_t *au, char *surname);
 void add_author_tail(authors_list_t *au, author_node_t *author);
+void add_author(authors_list_t *au);
+int author_exists(authors_list_t *au, char *surname);
+void print_author_list(authors_list_t *au);
+void auto_add_author(authors_list_t *au, char *surname, char *name);
 void save_author_list(authors_list_t *au);
+void free_author_list(authors_list_t *au);
 
 #endif
