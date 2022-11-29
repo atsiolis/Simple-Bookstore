@@ -43,11 +43,11 @@ int main(int argc, char *argv[])
         }
         else if (choice == 5)
         {
-            delete_author(&au, &b, &wr);
+            search_id_and_delete_author(&au, &b, &wr);
         }
         else if (choice == 6)
         {
-            delete_book(&b, &au, &wr);
+            search_title_and_delete_book(&b, &au, &wr);
         }
         else if (choice == 7)
         {

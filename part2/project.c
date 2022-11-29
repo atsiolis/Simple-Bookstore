@@ -135,7 +135,7 @@ void search_surname_and_print_author(authors_list_t *au, books_list_t *b, writes
         {
             printf("\n");
             printf("Title: %s\n", wr_cur->info->title);
-            b_cur=b->head;
+            b_cur = b->head;
             while (b_cur != NULL)
             {
                 if (!strcmp(b_cur->info->title, wr_cur->info->title))
@@ -168,7 +168,7 @@ void search_title_print_book(books_list_t *b, authors_list_t *au, writes_list_t 
         return;
     }
 
-    while (b_cur != NULL && b->head!=NULL)
+    while (b_cur != NULL)
     {
         if (!strcmp(b_cur->info->title, title))
         {
@@ -202,10 +202,126 @@ void search_title_print_book(books_list_t *b, authors_list_t *au, writes_list_t 
     return;
 }
 
-void delete_book(books_list_t *b, authors_list_t *au, writes_list_t *wr)
+void search_id_and_delete_author(authors_list_t *au, books_list_t *b, writes_list_t *wr)
+{
+    int i, id, nob, title_counter = 0;
+    char title[50];
+    author_node_t *au_cur = au->head, *au_prev = NULL;
+    writes_node_t *wr_cur = wr->head, *wr_prev = NULL;
+    book_node_t *b_cur = b->head, *b_prev = NULL;
+    bool flag = true; // true if author doesn't exist
+    printf("Enter author's id: ");
+    scanf("%d", &id);
+
+    while ((au_cur != NULL) && (au_cur->info->writer_id != id))
+    {
+        au_prev = au_cur;
+        au_cur = au_cur->next;
+    }
+
+    if (au_cur == au->head)
+    {
+        au_cur = au->head;
+        au->head = au->head->next;
+        nob = au_cur->info->num_of_books;
+        free(au_cur->info->surname);
+        free(au_cur->info->name);
+        free(au_cur->info);
+        free(au_cur);
+        au->size--;
+        flag = false;
+    }
+    else
+    {
+        au_prev->next = au_cur->next;
+        nob = au_cur->info->num_of_books;
+        free(au_cur->info->surname);
+        free(au_cur->info->name);
+        free(au_cur->info);
+        free(au_cur);
+        flag = false;
+        au->size--;
+    }
+    if (flag == true)
+    {
+        printf("Author doesn't exist.\n");
+    }
+
+    for (i = 0; i < nob; i++)
+    {
+        wr_cur = wr->head;
+        while ((wr_cur != NULL) && wr_cur->info->writer_id != id)
+        {
+            wr_prev = wr_cur;
+            wr_cur = wr_cur->next;
+        }
+        strcpy(title, wr_cur->info->title);
+
+        wr_cur = wr->head;
+        title_counter = 0;
+        while (wr_cur != NULL)
+        {
+            if (!strcmp(title, wr_cur->info->title))
+                title_counter++;
+            wr_cur = wr_cur->next;
+        }
+
+        if (title_counter == 1)
+        {
+            while ((b_cur != NULL) && (strcmp(title, b_cur->info->title) != 0))
+            {
+                b_prev = b_cur;
+                b_cur = b_cur->next;
+            }
+            if (b_cur == b->head)
+            {
+                b_cur = b->head;
+                b->head = b->head->next;
+                free(b_cur->info->title);
+                free(b_cur->info);
+                free(b_cur);
+                b->size--;
+            }
+            else
+            {
+                b_prev->next = b_cur->next;
+                free(b_cur->info->title);
+                free(b_cur->info);
+                free(b_cur);
+                b->size--;
+            }
+        }
+
+        wr_cur = wr->head;
+        while ((wr_cur != NULL) && wr_cur->info->writer_id != id)
+        {
+            wr_prev = wr_cur;
+            wr_cur = wr_cur->next;
+        }
+        if (wr_cur == wr->head)
+        {
+            wr_cur = wr->head;
+            wr->head = wr->head->next;
+            free(wr_cur->info->title);
+            free(wr_cur->info);
+            free(wr_cur);
+            wr->size--;
+        }
+        else
+        {
+            wr_prev->next = wr_cur->next;
+            free(wr_cur->info->title);
+            free(wr_cur->info);
+            free(wr_cur);
+            wr->size--;
+        }
+    }
+}
+
+void search_title_and_delete_book(books_list_t *b, authors_list_t *au, writes_list_t *wr)
 {
     char title[50];
-    int i,counter=0;
+    int i, counter = 0;
     book_node_t *b_cur = b->head;
     book_node_t *b_prev = NULL;
     writes_node_t *wr_cur = wr->head;
@@ -215,23 +331,21 @@ void delete_book(books_list_t *b, authors_list_t *au, writes_list_t *wr)
     printf("Enter title: ");
     scanf("%s", title);
 
-
     if (book_exists(b, title) == 0)
     {
         printf("Book does not exist.\n");
         return;
     }
 
-
     while (b_cur != NULL && strcmp(b_cur->info->title, title) != 0)
     {
         b_prev = b_cur;
         b_cur = b_cur->next;
     }
-    if(b_cur==b->head)
+    if (b_cur == b->head)
     {
-        b_cur=b->head;
-        b->head=b->head->next;
+        b_cur = b->head;
+        b->head = b->head->next;
         free(b_cur->info->title);
         free(b_cur->info);
         free(b_cur);
@@ -246,28 +360,26 @@ void delete_book(books_list_t *b, authors_list_t *au, writes_list_t *wr)
         b->size--;
     }
 
-    while (wr_cur!=NULL)
+    while (wr_cur != NULL)
     {
-        if(strcmp(wr_cur->info->title, title)==0)
+        if (strcmp(wr_cur->info->title, title) == 0)
         {
             counter++;
         }
-        wr_cur=wr_cur->next;
+        wr_cur = wr_cur->next;
     }
 
-    
-
-    for(i=0;i<counter;i++)
+    for (i = 0; i < counter; i++)
     {
-        wr_cur=wr->head;
-        while(wr_cur!=NULL &&strcmp(wr_cur->info->title, title) != 0)
+        wr_cur = wr->head;
+        while (wr_cur != NULL && strcmp(wr_cur->info->title, title) != 0)
         {
             wr_prev = wr_cur;
             wr_cur = wr_cur->next;
         }
 
-        au_cur=au->head;
-        while(au_cur != NULL)
+        au_cur = au->head;
+        while (au_cur != NULL)
         {
             if (au_cur->info->writer_id == wr_cur->info->writer_id)
             {
@@ -291,6 +403,6 @@ void delete_book(books_list_t *b, authors_list_t *au, writes_list_t *wr)
             free(wr_cur->info);
             free(wr_cur);
             wr->size--;
-        }   
+        }
     }
 }
