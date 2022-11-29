@@ -18,7 +18,7 @@ void load_book_logs(books_array_t *b)
     char *token;
     FILE *fp;
 
-    if((fp = fopen("book_logs.txt", "r")) == NULL)
+    if ((fp = fopen("book_logs.txt", "r")) == NULL)
     {
         printf("Book logs not found. Created file.\n");
         fp = fopen("book_logs.txt", "w");
@@ -30,8 +30,8 @@ void load_book_logs(books_array_t *b)
     token = strtok(line, "\n\0");
     b->size = atoi(token);
     token = NULL;
-    
-    for( i = 0; i < b->size; i++)
+
+    for (i = 0; i < b->size; i++)
     {
         if (i == b->capacity)
         {
@@ -58,6 +58,17 @@ void load_book_logs(books_array_t *b)
     fclose(fp);
 }
 
+int book_exists(books_array_t *b, char *title)
+{
+    int i;
+    for (i = 0; i < b->size; i++)
+    {
+        if (strcmp(b->array[i].title, title) == 0)
+            return 1;
+    }
+    return 0;
+}
+
 void swap_book(book_t *a, book_t *b)
 {
     book_t temp = *a;
@@ -69,8 +80,20 @@ void print_books(books_array_t *b)
 {
     int i;
 
-    for(i = 0; i < b->size; i++)
+    for (i = 0; i < b->size; i++)
         printf("Release year: %d, Title: %s, Price: %f\n", b->array[i].release_date, b->array[i].title, b->array[i].price);
+}
+
+int search_book(books_array_t *b, char *title)
+{
+    int i;
+
+    for (i = 0; i < b->size; i++)
+    {
+        if (strcmp(b->array[i].title, title) == 0)
+            return i;
+    }
+    return -1;
 }
 
 void save_book_logs(books_array_t *b)
@@ -83,9 +106,9 @@ void save_book_logs(books_array_t *b)
         printf("Error logging books.\n");
         return;
     }
-    fprintf(fp, "%d\n",b->size);
+    fprintf(fp, "%d\n", b->size);
 
-    for( i = 0; i < b->size; i++)
+    for (i = 0; i < b->size; i++)
     {
         fprintf(fp, "%s\n", b->array[i].title);
         fprintf(fp, "%d\n", b->array[i].release_date);
@@ -97,33 +120,9 @@ void save_book_logs(books_array_t *b)
 void free_books_array(books_array_t *b)
 {
     int i;
-    for(i = 0; i < b->size; i++)
+    for (i = 0; i < b->size; i++)
     {
         free(b->array[i].title);
     }
     free(b->array);
-    
-}
-
-int book_exists(books_array_t *b, char *title)
-{
-    int i;
-    for(i = 0; i < b->size; i++)
-    {
-        if(strcmp(b->array[i].title, title) == 0)
-            return 1;
-    }
-    return 0;
-}
-
-int search_book(books_array_t *b, char *title)
-{
-    int i;
-    
-    for(i = 0; i < b->size; i++)
-    {
-        if(strcmp(b->array[i].title, title) == 0)
-            return i;
-    }
-    return -1;
 }

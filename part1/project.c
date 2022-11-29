@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h> 
+#include <stdbool.h>
 #include "writes.h"
 #include "author.h"
 #include "book.h"
-#include "project_lib.h"
+#include "project.h"
 #define SIZE 50
 
 int menu()
@@ -27,26 +27,28 @@ int menu()
 
 void add_book(books_array_t *b, authors_array_t *au, writes_array_t *wr)
 {
-    int i,num_of_authors;
-    char surname[20], name[20],temp,title[50];
+    int i, num_of_authors;
+    char surname[20], name[20], temp, title[50];
     int au_ex_id;
-    
-    if(b->size == b->capacity)
 
+    if (b->size == b->capacity)
     {
         b->capacity *= 2;
         b->array = realloc(b->array, b->capacity * sizeof(book_t));
     }
     b->array[b->size].title = malloc(50 * sizeof(char));
+
     printf("Enter title: ");
     scanf("%c", &temp);
     scanf("%[^\n]", title);
     scanf("%c", &temp);
-    if(book_exists(b, title) == 1)
+
+    if (book_exists(b, title) == 1)
     {
         printf("Book already exists.\n");
         return;
     }
+
     strcpy(b->array[b->size].title, title);
     printf("Enter release year: ");
     scanf("%d", &b->array[b->size].release_date);
@@ -55,16 +57,17 @@ void add_book(books_array_t *b, authors_array_t *au, writes_array_t *wr)
     printf("Number of authors: ");
     scanf("%d", &num_of_authors);
 
-    for(i = 0; i < num_of_authors; i++)
+    for (i = 0; i < num_of_authors; i++)
     {
-        
+
         printf("Enter author's surname: ");
         scanf("%s", surname);
-        au_ex_id=author_exists(au, surname);
-        if(au_ex_id!=0)
+        au_ex_id = author_exists(au, surname);
+
+        if (au_ex_id != 0)
         {
             add_writes(wr, b->array[b->size].title, au_ex_id);
-            au->array[bin_search_author(au,au_ex_id)].num_of_books++;
+            au->array[bin_search_author(au, au_ex_id)].num_of_books++;
         }
         else
         {
@@ -78,51 +81,47 @@ void add_book(books_array_t *b, authors_array_t *au, writes_array_t *wr)
 
     b->size++;
 
-    for(i = b->size-1; i > 0 && strcmp(b->array[i].title, b->array[i-1].title) < 0; i--)
+    for (i = b->size - 1; i > 0 && strcmp(b->array[i].title, b->array[i - 1].title) < 0; i--)
     {
-        swap_book(&b->array[i], &b->array[i-1]);
+        swap_book(&b->array[i], &b->array[i - 1]);
     }
 }
 
-void search_surname_and_print_author(authors_array_t *au, books_array_t *b,  writes_array_t *wr)
+void search_surname_and_print_author(authors_array_t *au, books_array_t *b, writes_array_t *wr)
 {
     int i, id, au_pos, wr_pos;
     char surname[20];
+
     printf("Enter author's surname: ");
     scanf("%s", surname);
 
     id = author_exists(au, surname);
-    if(id == 0)
+    if (id == 0)
     {
         printf("Author does not exist.\n");
         return;
     }
-    
-    au_pos = bin_search_author(au, id);
-    wr_pos = binary_search_writes(wr, id);
-    
-    int temp = wr_pos;
 
-    for(i=wr_pos; i>=0 && wr->array[i].writer_id == id; i--)
-        temp=i;
-    
-    
+    au_pos = bin_search_author(au, id);
+    wr_pos = bin_search_writes(wr, id);
+
+    int temp = wr_pos;
+    for (i = wr_pos; i >= 0 && wr->array[i].writer_id == id; i--)
+        temp = i;
     
     printf("Author's id: %d\n", au->array[au_pos].writer_id);
     printf("Author's surname: %s\n", au->array[au_pos].surname);
     printf("Author's name: %s\n", au->array[au_pos].name);
     printf("Number of books: %d\n", au->array[au_pos].num_of_books);
-    
-    
-    for(i=temp; i<wr->size && wr->array[i].writer_id == id; i++)
+
+    for (i = temp; i < wr->size && wr->array[i].writer_id == id; i++)
     {
         printf("\n");
         printf("Title: %s\n", wr->array[i].title);
         printf("Release date: %d\n", b->array[search_book(b, wr->array[i].title)].release_date);
         printf("Price: %.2f\n", b->array[search_book(b, wr->array[i].title)].price);
     }
-
-    return;   
+    return;
 }
 
 void seach_title_and_print_book(books_array_t *b, authors_array_t *au, writes_array_t *wr)
@@ -164,7 +163,6 @@ void seach_title_and_print_book(books_array_t *b, authors_array_t *au, writes_ar
     if (flag == false)
         printf("No books with this title were found.\n");
 }
-
 void search_id_and_delete_author(authors_array_t *au, books_array_t *b, writes_array_t *wr)
 {
     int i, j, k, l, id, num_of_books, au_pos, wr_pos, wr_counter = 0;
@@ -173,7 +171,7 @@ void search_id_and_delete_author(authors_array_t *au, books_array_t *b, writes_a
 
     au_pos = bin_search_author(au, id);
 
-    num_of_books=au->array[au_pos].num_of_books;
+    num_of_books = au->array[au_pos].num_of_books;
     if (au_pos == -1)
     {
         printf("Author does not exist.\n");
@@ -186,13 +184,13 @@ void search_id_and_delete_author(authors_array_t *au, books_array_t *b, writes_a
     }
     au->size--;
 
-    for(l=0; l<num_of_books; l++)
+    for (l = 0; l < num_of_books; l++)
     {
         int temp = binary_search_writes(wr, id);
         for (i = wr_pos; i >= 0 && wr->array[i].writer_id == id; i--)
             temp = i;
 
-        wr_counter=0;
+        wr_counter = 0;
         for (i = 0; i < wr->size; i++)
         {
             if (strcmp(wr->array[i].title, wr->array[temp].title) == 0)
@@ -221,7 +219,7 @@ void search_id_and_delete_author(authors_array_t *au, books_array_t *b, writes_a
                 b->size--;
             }
         }
-        else if(wr_counter>1)
+        else if (wr_counter > 1)
         {
             for (i = temp; i < wr->size && wr->array[i].writer_id == id; i++)
             {
@@ -235,7 +233,7 @@ void search_id_and_delete_author(authors_array_t *au, books_array_t *b, writes_a
     }
 }
 
-void search_and_delete_book(books_array_t *b, authors_array_t *au,  writes_array_t *wr)
+void search_title_and_delete_book(books_array_t *b, authors_array_t *au, writes_array_t *wr)
 {
     int i, j;
     int b_pos, wr_pos, b_reg = 0;
@@ -245,23 +243,22 @@ void search_and_delete_book(books_array_t *b, authors_array_t *au,  writes_array
     scanf("%s", title);
 
     b_pos = search_book(b, title);
-    if(b_pos >= 0)
+    if (b_pos >= 0)
     {
-        for( i = b_pos; i < b->size - 1; i++)
-            swap_book(&b->array[i], &b->array[i+1]);
+        for (i = b_pos; i < b->size - 1; i++)
+            swap_book(&b->array[i], &b->array[i + 1]);
         b->size--;
 
-        while(search_writes(wr, title) >= 0)
+        while (search_writes(wr, title) >= 0)
         {
             wr_pos = search_writes(wr, title);
             au->array[bin_search_author(au, wr->array[wr_pos].writer_id)].num_of_books--;
-            for( i = wr_pos; i < wr->size - 1 ; i++)
-                swap_writes(&wr->array[i], &wr->array[i+1]);
+            for (i = wr_pos; i < wr->size - 1; i++)
+                swap_writes(&wr->array[i], &wr->array[i + 1]);
             wr->size--;
         }
         printf("\nBook logs with title %s deleted successfully. \n", &title);
     }
     else
         printf("\nNo books with that title were found.\n");
-
 }
