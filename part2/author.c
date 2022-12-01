@@ -6,12 +6,14 @@
 #include "author.h"
 #define SIZE 20
 
+//initialize the author list
 void init_author_list(authors_list_t *au)
 {
-    au->head = NULL;
-    au->size = 0;
+    au->head = NULL;    //set head to NULL
+    au->size = 0;       //set size to 0 
 }
 
+//load the author list from the file 
 void load_author_list(authors_list_t *au)
 {
     int i;
@@ -22,20 +24,20 @@ void load_author_list(authors_list_t *au)
 
     if ((fp = fopen("author_logs.txt", "r")) == NULL)
     {
-        printf("Author logs not found. Created file.\n");
+        printf("Author logs not found. Created file.\n");       //if file not found, create file
         fp = fopen("author_logs.txt", "w");
         fclose(fp);
         return;
     }
-    node = (author_node_t *)malloc(sizeof(author_node_t));
-    node->info = (author_t *)malloc(sizeof(author_t));
-    node->info->name = (char *)malloc(SIZE * sizeof(char));
-    node->info->surname = (char *)malloc(SIZE * sizeof(char));
+    node = (author_node_t *)malloc(sizeof(author_node_t));      //allocate memory for the node
+    node->info = (author_t *)malloc(sizeof(author_t));          //allocate memory for the author info
+    node->info->name = (char *)malloc(SIZE * sizeof(char));     //allocate memory for the name
+    node->info->surname = (char *)malloc(SIZE * sizeof(char));  //allocate memory for the surname
     
     fgets(line, 100, fp);
-    token = strtok(line, "\n\0");
-    au->size = atoi(token);
-    token = NULL;
+    token = strtok(line, "\n\0");                    //get the first line of the file
+    au->size = atoi(token);             //convert the string to int and set it to the size
+    token = NULL;               //set token to NULL
 
     for (i = 0; i < au->size; i++)
     {
@@ -62,44 +64,46 @@ void load_author_list(authors_list_t *au)
         add_author_tail(au, node);
     }
     fclose(fp);
-    free(node->info->surname);
+    free(node->info->surname);      //free the memory of the node used to load the file
     free(node->info->name);
     free(node->info);
     free(node);
 }
 
+//add new author to the end of the author list- used in the load_author_list function
 void add_author_tail(authors_list_t *au, author_node_t *author)
 {
-    author_node_t *new_node, *cur;
-    new_node = (author_node_t *)malloc(sizeof(author_node_t));
+    author_node_t *new_node, *cur;          //create new node and current node
+    new_node = (author_node_t *)malloc(sizeof(author_node_t));      
     new_node->info = (author_t *)malloc(sizeof(author_t));
     new_node->info->surname = (char *)malloc(SIZE * sizeof(char));
     new_node->info->name = (char *)malloc(SIZE * sizeof(char));
     new_node->next = NULL;
-    strcpy(new_node->info->surname, author->info->surname);
+    strcpy(new_node->info->surname, author->info->surname);         //copy the info to the new node
     strcpy(new_node->info->name, author->info->name);
     new_node->info->writer_id = author->info->writer_id;
     new_node->info->num_of_books = author->info->num_of_books;
     if (au->head == NULL)
     {
-        au->head = new_node;
+        au->head = new_node;                    //if the list is empty, set the new node to the head
         return;
     }
     cur = au->head;
     while (cur->next != NULL)
     {
-        cur = cur->next;
+        cur = cur->next;                    //go to the end of the list
     }
-    cur->next = new_node;
+    cur->next = new_node;                   //set the new node to the end of the list
 }
 
+//add new author to the author list
 void add_author(authors_list_t *au)
 {
     author_node_t *prev, *cur, *new_node;
     time_t t;
     char surname[20];
     srand((unsigned)time(&t));
-    int id = rand() % 1000 + 1;
+    int id = rand() % 1000 + 1;         //generate random id
     new_node = (author_node_t *)malloc(sizeof(author_node_t));
     new_node->info = (author_t *)malloc(sizeof(author_t));
     new_node->info->surname = (char *)malloc(SIZE * sizeof(char));
@@ -114,7 +118,7 @@ void add_author(authors_list_t *au)
         {
             if (cur->info->writer_id == id)
             {
-                id = rand() % 1000 + 1;
+                id = rand() % 1000 + 1;                     //if the id is already used, generate new id
                 a = true;
             }
         }
@@ -124,14 +128,14 @@ void add_author(authors_list_t *au)
     scanf("%s", surname);
     if (author_exists(au, surname) != 0)
     {
-        printf("Author already exists.\n");
+        printf("Author already exists.\n");             //if the author already exists, return
         return;
     }
     strcpy(new_node->info->surname, surname);
 
     new_node->info->writer_id = id;
     printf("Enter name: ");
-    scanf("%s", new_node->info->name);
+    scanf("%s", new_node->info->name);                 
     new_node->info->num_of_books = 0;
     au->size++;
 
@@ -140,7 +144,7 @@ void add_author(authors_list_t *au)
 
     if (cur == NULL)
     {
-        new_node->next = au->head;
+        new_node->next = au->head;              //if the list is empty, set the new node to the head
         au->head = new_node;
         return;
     }
@@ -148,18 +152,19 @@ void add_author(authors_list_t *au)
     while ((cur != NULL) && (cur->info->writer_id < new_node->info->writer_id))
     {
         prev = cur;
-        cur = cur->next;
+        cur = cur->next;                //go to the correct position in the list based on the id
     }
     if (cur == au->head)
     {
         new_node->next = au->head;
-        au->head = new_node;
+        au->head = new_node;                //if the new node is the first in the list, set it to the head
         return;
     }
-    prev->next = new_node;
+    prev->next = new_node;              //set the new node to the correct position
     new_node->next = cur;
 }
 
+//check if the author already exists and return the id
 int author_exists(authors_list_t *au, char *surname)
 {
     author_node_t *cur;
@@ -171,6 +176,7 @@ int author_exists(authors_list_t *au, char *surname)
     return 0;
 }
 
+//print the author list
 void print_author_list(authors_list_t *au)
 {
     author_node_t *cur;
@@ -182,6 +188,7 @@ void print_author_list(authors_list_t *au)
     }
 }
 
+//add new author automatically- usedin the add_book function
 void auto_add_author(authors_list_t *au, char *surname, char *name)
 {
     author_node_t *prev, *cur, *new_node;
@@ -202,7 +209,7 @@ void auto_add_author(authors_list_t *au, char *surname, char *name)
         {
             if (cur->info->writer_id == id)
             {
-                id = rand() % 1000 + 1;
+                id = rand() % 1000 + 1;                 //if the id is already used, generate new id
                 a = true;
             }
         }
@@ -220,25 +227,26 @@ void auto_add_author(authors_list_t *au, char *surname, char *name)
     if (cur == NULL)
     {
         new_node->next = au->head;
-        au->head = new_node;
+        au->head = new_node;            //if the list is empty, set the new node to the head
         return;
     }
 
     while ((cur != NULL) && (cur->info->writer_id < new_node->info->writer_id))
     {
         prev = cur;
-        cur = cur->next;
+        cur = cur->next;                //go to the correct position in the list based on the id
     }
     if (cur == au->head)
     {
         new_node->next = au->head;
-        au->head = new_node;
+        au->head = new_node;                //if the new node is the first in the list, set it to the head
         return;
     }
-    prev->next = new_node;
+    prev->next = new_node;              //set the new node to the correct position
     new_node->next = cur;
 }
 
+//save the author list to a file
 void save_author_list(authors_list_t *au)
 {
     FILE *fp;
@@ -263,6 +271,7 @@ void save_author_list(authors_list_t *au)
     fclose(fp);
 }
 
+//free the author list
 void free_author_list(authors_list_t *au)
 {
     author_node_t *cur, *next;

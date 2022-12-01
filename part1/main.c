@@ -13,14 +13,12 @@ int main(int argc, char *argv[])
     writes_array_t wr;
     int choice;
 
-    init_author(&au, 5);
-    init_book(&b, 5);
-    init_writes(&wr, 5);
-    load_book_logs(&b);
-    load_author_logs(&au);
-    load_writes_logs(&wr);
-    qsort(au.array, au.size, sizeof(author_t), compare_author);
-    // missing sort books+writes that were loaded
+    init_author(&au, 5);        
+    init_book(&b, 5);           
+    init_writes(&wr, 5);        
+    load_author_logs(&au);      
+    load_book_logs(&b);         
+    load_writes_logs(&wr);      
 
     choice = menu();
     while (choice)
@@ -28,12 +26,12 @@ int main(int argc, char *argv[])
         if (choice == 1)
         {
             add_author(&au);
-            print_authors(&au);
+            //print_authors(&au);
         }
         else if (choice == 2)
         {
             add_book(&b, &au, &wr);
-            print_books(&b);
+            //print_books(&b);
         }
         else if (choice == 3)
         {
@@ -53,7 +51,6 @@ int main(int argc, char *argv[])
         }
         else if (choice == 7)
         {
-            qsort(au.array, au.size, sizeof(author_t), compare_author);
             save_book_logs(&b);
             save_author_logs(&au);
             save_writes_logs(&wr);

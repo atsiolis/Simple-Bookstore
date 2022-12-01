@@ -26,12 +26,12 @@ int main(int argc, char *argv[])
         if (choice == 1)
         {
             add_author(&au);
-            print_author_list(&au);
+            //print_author_list(&au);
         }
         else if (choice == 2)
         {
             add_book(&b, &au, &wr);
-            print_book_list(&b);
+            //print_book_list(&b);
         }
         else if (choice == 3)
         {

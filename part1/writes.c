@@ -3,6 +3,7 @@
 #include <string.h>
 #include "writes.h"
 
+//initialize the writes struct- same as init_book function and init_author function
 void init_writes(writes_array_t *wr, int cap)
 {
     wr->array = malloc(cap * sizeof(writes_t));
@@ -10,6 +11,7 @@ void init_writes(writes_array_t *wr, int cap)
     wr->size = 0;
 }
 
+//load the writes from the file- same as load_book_logs function and load_author_logs function
 void load_writes_logs(writes_array_t *wr)
 {
     int i;
@@ -52,7 +54,8 @@ void load_writes_logs(writes_array_t *wr)
     fclose(fp);
 }
 
-void add_writes(writes_array_t *wr, char *title, int writer_id)
+//add new author-book info to the writes array
+void add_writes(writes_array_t *wr, char *title, int writer_id) 
 {
     int i;
 
@@ -71,13 +74,13 @@ void add_writes(writes_array_t *wr, char *title, int writer_id)
 
     for (i = wr->size - 1; i > 0 && wr->array[i].writer_id < wr->array[i - 1].writer_id; i--)
     {
-        swap_writes(&wr->array[i], &wr->array[i - 1]);
-        temp = i - 1;
+        swap_writes(&wr->array[i], &wr->array[i - 1]);  //sort based on the id 
+        temp = i - 1;                                   //save the position of the new element
     }
 
-    for (i = temp; i > 0; i--)
+    for (i = temp; i > 0; i--)                          //sort based on the title starting from the position of the new element
     {
-        if (wr->array[i].writer_id == wr->array[i - 1].writer_id)
+        if (wr->array[i].writer_id == wr->array[i - 1].writer_id)           
         {
             if (strcmp(wr->array[i].title, wr->array[i - 1].title) < 0)
             {
@@ -87,6 +90,7 @@ void add_writes(writes_array_t *wr, char *title, int writer_id)
     }
 }
 
+//swap two writes elements
 void swap_writes(writes_t *a, writes_t *b)
 {
     writes_t temp = *a;
@@ -94,6 +98,7 @@ void swap_writes(writes_t *a, writes_t *b)
     *b = temp;
 }
 
+//search for the position of the author-book info in the array based on the id and return the position
 int bin_search_writes(writes_array_t *wr, int writer_id)
 {
     int low = 0;
@@ -113,6 +118,7 @@ int bin_search_writes(writes_array_t *wr, int writer_id)
     return -1;
 }
 
+//search for the position of the author-book info in the array based on the title and return the position
 int search_writes(writes_array_t *wr, char *title)
 {
     int i;
@@ -125,6 +131,7 @@ int search_writes(writes_array_t *wr, char *title)
     return -1;
 }
 
+//save the writes array to the file- same as save_book_logs function and save_author_logs function
 void save_writes_logs(writes_array_t *wr)
 {
     int i;
@@ -145,18 +152,11 @@ void save_writes_logs(writes_array_t *wr)
     fclose(fp);
 }
 
+//free the writes array- same as free_book function and free_author function
 void free_writes_array(writes_array_t *wr)
 {
     int i;
     for (i = 0; i < wr->size; i++)
         free(wr->array[i].title);
     free(wr->array);
-}
-
-void print_writes(writes_array_t *wr)
-{
-    int i;
-
-    for (i = 0; i < wr->size; i++)
-        printf("Writer id: %d, Book title: %s", wr->array[i].writer_id, wr->array[i].title);
 }

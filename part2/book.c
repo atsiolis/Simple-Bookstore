@@ -4,6 +4,7 @@
 #include "book.h"
 #define SIZE 20
 
+//initialize the book list
 void init_book_list(books_list_t *b)
 {
 
@@ -11,6 +12,7 @@ void init_book_list(books_list_t *b)
     b->size = 0;
 }
 
+//load the book list from the file- same as load_author_list
 void load_book_list(books_list_t *b)
 {
     int i;
@@ -60,6 +62,7 @@ void load_book_list(books_list_t *b)
     free(node);
 }
 
+//add a book to the tail of the list - same as add_author_tail
 void add_book_tail(books_list_t *b, book_node_t *book)
 {
     book_node_t *new_node, *cur;
@@ -83,6 +86,7 @@ void add_book_tail(books_list_t *b, book_node_t *book)
     cur->next = new_node;
 }
 
+//check if the book is in the list
 int book_exists(books_list_t *b, char *title)
 {
     book_node_t *book;
@@ -98,6 +102,7 @@ int book_exists(books_list_t *b, char *title)
     return 0;
 }
 
+//print the book list
 void print_book_list(books_list_t *b)
 {
     book_node_t *cur;
@@ -109,6 +114,7 @@ void print_book_list(books_list_t *b)
     }
 }
 
+//save the book list to the file - same as save_author_list
 void save_book_list(books_list_t *b)
 {
     FILE *fp;
@@ -132,6 +138,7 @@ void save_book_list(books_list_t *b)
     fclose(fp);
 }
 
+//free the book list - same as free_author_list
 void free_book_list(books_list_t *b)
 {
     book_node_t *cur, *next;

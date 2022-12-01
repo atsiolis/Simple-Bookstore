@@ -22,6 +22,5 @@ int bin_search_writes(writes_array_t *wr, int writer_id);
 int search_writes(writes_array_t *wr, char *title);
 void save_writes_logs(writes_array_t *wr);
 void free_writes_array(writes_array_t *wr);
-void print_writes(writes_array_t *wr);
 
 #endif

@@ -4,7 +4,7 @@
 #include "writes.h"
 #define SIZE 20
 
-
+//initialize the writes list
 void init_writes_list(writes_list_t *wr)
 {
 
@@ -12,6 +12,7 @@ void init_writes_list(writes_list_t *wr)
     wr->size = 0;
 }
 
+//load the writes list from the file- same as load_book_list
 void load_writes_list(writes_list_t *wr)
 {
     int i;
@@ -55,7 +56,8 @@ void load_writes_list(writes_list_t *wr)
     free(node->info);
     free(node);
 }
-//used in load
+
+//add a writes node to the tail of the list - same as add_book_tail
 void add_writes_tail(writes_list_t *wr, writes_node_t *writes)
 {
     writes_node_t *new_node, *cur;
@@ -78,6 +80,7 @@ void add_writes_tail(writes_list_t *wr, writes_node_t *writes)
     cur->next = new_node;
 }
 
+//add a writes node to the list
 void add_writes(writes_list_t *wr, char *title, int writer_id)
 {
     writes_node_t *new_node, *cur, *prev;
@@ -101,13 +104,13 @@ void add_writes(writes_list_t *wr, char *title, int writer_id)
     }
     while ((cur != NULL) && (cur->info->writer_id < writer_id))
     {
-        prev = cur;
+        prev = cur;                 //sort by writer_id
         cur = cur->next;
     }
     while ((cur != NULL) && (strcmp(new_node->info->title, cur->info->title) > 0) && (cur->info->writer_id == writer_id))
     {
         prev = cur;
-        cur = cur->next;
+        cur = cur->next;            //sort by title until writer_id changes
     }
     if (cur == wr->head)
     {
@@ -120,6 +123,7 @@ void add_writes(writes_list_t *wr, char *title, int writer_id)
     new_node->next = cur;
 }
 
+//save the writes list to the file - same as save_book_list
 void save_writes_list(writes_list_t *wr)
 {
     FILE *fp;
@@ -142,6 +146,7 @@ void save_writes_list(writes_list_t *wr)
     fclose(fp);
 }
 
+//free the writes list - same as free_book_list
 void free_writes_list(writes_list_t *wr)
 {
     writes_node_t *cur, *next;
